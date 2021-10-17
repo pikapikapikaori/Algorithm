@@ -1,2 +1,2 @@
 # Algorithm
-Algorithm class projects.
+Algorithm homework.
