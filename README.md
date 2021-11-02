@@ -3,5 +3,7 @@
 ## Introduction.    
 Algorithm class projects. 
      
-## Homewrok.     
+## Homework.     
 ## Homework 1
+Focused on asymptotic anaylysis and sort algorithms.     
+The last question is solved by applying a Josephus circle.
