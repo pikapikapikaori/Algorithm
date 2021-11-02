@@ -1,7 +1,7 @@
 # Algorithm
      
-#### Introduction.    
+## Introduction.    
 Algorithm class projects. 
      
-#### Homewrok.     
-Branch: AlgorithmHomework
+## Homewrok.     
+##Homework 1
