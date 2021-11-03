@@ -1,0 +1,402 @@
+%!TEX program = xelatex
+\documentclass{article}  
+
+\usepackage[UTF8]{ctex}  
+ 
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{parskip}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{verbatim}
+\usepackage{enumerate}
+
+\usepackage{listings} 
+\usepackage{xcolor}
+\lstset{
+columns=fixed,       
+ numbers=left,                                        % 在左侧显示行号
+ numberstyle=\tiny\color{gray},                       % 设定行号格式
+ frame=none,                                          % 不显示背景边框
+ backgroundcolor=\color[RGB]{245,245,244},            % 设定背景颜色
+ keywordstyle=\color[RGB]{40,40,255},                 % 设定关键字颜色
+ numberstyle=\footnotesize\color{darkgray},           
+ commentstyle=\it\color[RGB]{0,96,96},                % 设置代码注释的格式
+ stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},   % 设置字符串格式
+ showstringspaces=false,                              % 不显示字符串中的空格
+ language=c++, 
+ }
+ 
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+
+
+
+%%%%For macos users, please enable below commands to support chinese characters. If the fonts are not installed in your system, please install them first.
+\setCJKmainfont{Kaiti TC Regular}
+\setCJKsansfont{Songti TC Regular}
+\setCJKmonofont{Heiti TC Regular}
+ 
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{reflection}[2][Reflection]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{proposition}[2][Proposition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+ 
+\begin{document}
+ 
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+ 
+%\renewcommand{\qedsymbol}{\filledbox}
+ 
+\title{The First Homework  | 第一次作业}
+\author{ピカピカピ}
+ 
+\maketitle
+
+\section{Different-sized sub-problems}
+\begin{align*}
+T(n)\ &=\ T(n/2)\ +\ 2T(n/8)\ +\ n \\
+&\leq \ c\ \cdot \ n/2\ +\ 2c\ \cdot\ n/8\ +\ n \\
+&=\ (\frac{3c}{4}\ +\ 1)\ \cdot \ n \\
+&\leq \ cn\ \ \ \ \ \ \ \ \ \ \ \ \mbox{when $c\ \geq \ 1$}
+\end{align*}
+因而$T(n)\ =\ O(n)$
+
+\section{Asymptotic bound with Maximum operator}
+由于$f(n)$和$g(n)$都是渐进非负函数, 根据定义有: \\
+$\exists \ N_f,\ N_g$使得: 
+\begin{align*}
+& \mbox{当}\ n\ >\ N_f\ \mbox{时}，\mbox{有}\ f(n)\ \geq \ 0 \\
+\mbox{同时, }\ & \mbox{当}\ n\ >\ N_g\ \mbox{时}，\mbox{有}\ g(n)\ \geq\ 0
+\end{align*}
+取$N_0\ =\ max(f(n),\ g(n))$\\
+当$n > N_0$时, 有:
+\begin{align*}
+& \mbox{当}\ n\ >\ N_0\ \mbox{时}，\mbox{有}\ f(n)\ \geq\ 0,\ g(n)\ \geq\ 0
+\end{align*}
+另一方面, 当$n > N_0$时, 显然有: 
+\begin{align*}
+f(n)\ & \leq \ max(f(n),\ g(n)) \\
+g(n)\ & \leq \ max(f(n),\ g(n)) \\
+(f(n)\ +\ g(n))/2\ & \leq \ max(f(n),\ g(n)) \\
+max(f(n),\ g(n))\ & \leq \ f(n)\ +\ g(n)
+\end{align*}
+因而当$n > N_0$时, 可以得到: 
+\begin{align*}
+0\ \leq\ (f(n)\ +\ g(n))/2\ \leq \  max(f(n),\ g(n)) \ \leq \ f(n)\ +\ g(n)
+\end{align*}
+即: 
+\begin{align*}
+max(f(n),\ g(n))\ =\ \mbox{Θ}(f(n)\ +\ g(n))
+\end{align*}
+
+
+\section{Proof of correctness}
+对于每一次的比较操作而言, 若$a_i\ \leq\ a_j$, 那么$a_i,\ a_j$保持不变, 于是有$a_i\ \leq\ a_j$; 若$a_i\ \geq\ a_j$, 那么$a_i,\ a_j$交换, 于是有$a_i\ \leq\ a_j$. 换言之, 进行过一次比较交换操作后, 恒有$a_i\ \leq\ a_j$. \\
+证明如下: \\
+对于每一次以下标$i$开始的循环, 对$j\ -\ i$作数学归纳法. \\
+进行了第$j\ –\ i\ =\ 1$次比较后, 由上面结论知, $a_i\ \leq \ aj$. 所以$a_i$是$a_i,\ …,\ a_j$中最小的数. \\
+假设当$j\ –\ i\ =\ k $时“$a_i$是$a_i,\ …,\ a_j$中最小的数”成立, 则当$j\ –\ i\ =\ k\ +\ 1$时. $a_i\ \leq \ a_j$, 于是$a_j$不小于$a_i$, 根据假设, 即$a_j$不小于$a_i,\ …,\ a_{j - 1}$中最小的数. 于是$a_i,\ …,\ a_{j - 1}$中最小的数$a_i$仍是$a_i,\ …,\ a_j$中最小的数. \\
+由数学归纳法原理可知, $a_i$是$a_i,\ …,\ a_n$中最小的数. \\
+完成排序后, 可知: 
+\begin{align*}
+a_1\ & =\ min(a_1,\ …,\ a_n), \\
+a_2\ & =\ min(a_2,\ …,\ a_n), \\
+& …, \\ 
+a_{n\ -\ 1}\ & =\ min(a_{n - 1},\ a_n)
+\end{align*}
+因为$max(a_1,\ …,\ a_n)\ \leq \ max(a_2,\ …,\ a_n)\ \leq \ ...\ \leq \ max(a_{n - 1},\ a_n)\ \leq \ a_n$,
+所以有$a_1\ \leq \ a_2\ \leq \ ...\ \leq \ a_n$. \\
+证毕.
+
+
+\section{COVID-19 Risk Detection}
+\subsection{(a)}
+见Algorithm 1.
+
+\begin{algorithm}
+\caption{O(n) retrieve customers}
+\begin{algorithmic}[1]
+\Procedure{$O(n)$Retrieve}{$c_0$}\Comment{$c_0$ 代表给定的顾客}
+\State $c_0\_leavtime \gets \mbox{$c_0$'s Leave Time} $
+\For{$c_i$ in Customer}\Comment{$c_i$ 代表顾客列表中除 $c_0$ 外的顾客}
+\State $c_i\_enttime\gets \mbox{$c_i$'s Enter Time}$
+\State $c_i\_leavtime\gets \mbox{$c_i$'s Leave Time}$
+\If{$c_i\_enttime\ \leq \ c_0\_leavtime\ \leq \ c_i\_leavtime$}
+\State Print $c_i$
+\EndIf
+\EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{(b)}
+见Algorithm 2.
+
+\begin{algorithm}
+\caption{$O(n^2)$ retrieve customers}
+\begin{algorithmic}[1]
+\Procedure{$O(n^2)$Retrieve}{c\_list}\Comment{c\_list 代表顾客列表}
+\State cnt = 0
+\For{$c_i$ in c\_list}\Comment{$c_i$ 代表顾客列表中每个顾客}
+\State $c_i\_leavtime\gets \mbox{$c_i$'s Leave Time}$
+\For{$c_j$ in c\_list}\Comment{$c_j$ 代表顾客列表中除  $c_i$ 外的顾客}
+\State $c_j\_enttime\gets \mbox{$c_j$'s Enter Time}$
+\State $c_j\_leavtime\gets \mbox{$c_j$'s Leave Time}$
+\If{$c_j\_enttime\ \leq \ c_i\_leavtime\ \leq \ c_j\_leavtime$}
+\State cnt ++
+\EndIf
+\EndFor
+\EndFor
+\State Print cnt
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+正如算法所示, 由于算法内部有一个两层的for循环遍历, 易知其时间复杂度为$\mbox{Θ}(n^2)$.
+
+\subsection{(c)}
+见Algorithm 3. \\
+由于算法中仅使用merge sort与一层循环遍历, 因而其时间复杂度为:
+\begin{align*}
+T(n)\ =\ T(2n) + O(nlgn)
+\end{align*}
+即其时间复杂度为$O(nlgn)$
+
+\begin{algorithm}
+\caption{$O(nlgn)$ retrieve customers}
+\begin{algorithmic}[1]
+
+\Procedure{MergeSort}{A, left, right}\Comment{A是数组, left, right是下标]}
+\If{$left\ \geq \ right$}
+\State return A[left..right]
+\EndIf
+\State $mid \gets \lfloor \frac{left+right}{2} \rfloor$
+\State MERGESORT (A,left,mid)
+\State MERGESORT (A,mid+1,right)
+\State MERGE (A,left,mid,right)
+\State return A[left..right]
+\EndProcedure
+
+\Procedure{Merge}{A, left, mid, right}\Comment{A是数组, left, right是下标]}
+\State $A'[left..right] \gets A[left..right] $
+\State $i \gets left $
+\State $j \gets mid+1 $
+\State $k \gets 0 $
+\While{$i \leq mid\ and\ j \leq right$}
+\If{$A'[i]\ \leq \ A'[j]$}
+\State $A[left+k] \gets A'[i]$
+\State $k++,\ i++$
+\Else
+\State $A[left+k] \gets A'[j]$
+\State $k++,\ j++$
+\EndIf
+\EndWhile
+\If{$i\ \leq \ mid$}
+\State $A[left+k..right] \gets A'[i..mid]$
+\Else
+\State $A[left+k..right] \gets A'[j..right]$
+\EndIf
+\State return A[left..right]
+\EndProcedure
+
+\Procedure{$O(nlgn)$Retrieve}{c\_list}\Comment{c\_list 代表顾客列表}
+\State cnt = 0
+\State presentc\_list = 0
+\State timelist.add(EnterTimeList)
+\State timelist.add(LeaveTimeList)\Comment{三个时间列表里的时间都以结构体中的一部分为形式存储, 即可以通过该时间查询到与时间绑定的顾客以及该时间是进店时间或离店时间}
+\State MERGESORT(timelist, 0, timelist.size()-1)
+\For{t in timelist}
+\If{t是进店时间}
+\State presentc\_list ++\Comment{presentc\_list存储了目前在店的顾客数量}
+\State cnt += presentc\_list.size()
+\Else\Comment{即如果t是离店时间}
+\State presentc\_list --
+\EndIf
+\EndFor
+\State return cnt
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
+\section{SELECT-7 algorithm}
+\subsection{(a)}
+对小组被以7为个数划分的SELECT-7算法而言, 就代码编写上, SELECT-7部分的伪代码不需要进行改动, MEDIAN\_OF\_MEDIANS-7部分的伪代码由于每组现在包含了7个元素, 因而在求每组中位数时算法内部的计算数值需要做出改动, 同时求中位数的中位数时数值也需要进行改动 \\
+换言之，应以7为循环的步长来执行寻找每组中位数的循环, 同时调用的partition7函数内部也应进行重写
+
+\subsection{(b)}
+根据题设, 可以得知原数组被划分为$\lceil{n/7}\rceil$个小组, 因而一共有$\lceil {n/7}\rceil$个中位数, 根据题设n为7的倍数, 因而MEDIAN\_OF\_MEDIANS-7内部对于SELECT-7的调用基于的数组大小最多为$n/7$
+
+\subsection{(c)}
+对MEDIAN\_OF\_MEDIANS-7而言, 根据题设n为7的倍数, 则根据被选出的pivot, 令$m\ =\ \lceil{n/7}\rceil$, 则比pivot小的数至少有$4(\lceil{m/2}\rceil\ -\ 1)\ +\ 3$个; 比pivot大的数至多有$n\ -\ 1\ -\ (4(\lceil{m/2}\rceil\ -\ 1)\ +\ 3)$个 \\
+由于:
+\begin{align*}
+& \ \  \ \ \   n\ -\ 1\ -\ (4(\lceil{m/2}\rceil\ -\ 1)\ +\ 3) \\
+& =\ n\ -\ 4\ -\ 4(\lceil{m/2}\rceil\ -\ 1) \\
+& =\ n\ -\ 4\lceil{m/2}\rceil \\
+& \leq \ n\ -\ 2n/7\ +\ 7 \\
+& =\ 5n/7\ +\ 7
+\end{align*}
+因而可以得知, SELECT-7内部的递归调用所基于的数组大小至多为$5n/7\ +\ 7$
+
+\subsection{(d)}
+在对SELECT-7和MEDIAN\_OF\_MEDIANS-7的一次调用过程中, 对大小为n的数组仅仅执行了几次的循环遍历操作, 不涉及到递归调用和嵌套循环等操作, 因而其时间复杂度是$\mbox{Θ}(n)$
+
+\subsection{(e)}
+\begin{align*}
+T(n)\ \leq \ T(n/7)\ +\ T(5n/7)\ +\ O(n)
+\end{align*}
+
+\subsection{(f)}
+\begin{align*}
+T(n)\ &\leq \ T(n/7)\ +\ T(5n/7)\ +\ O(n) \\
+&\leq \ c\ \cdot\ n/7\ +\ c\ \cdot\ 5n/7\ +\ dn \\
+&=\ 6/7\ \cdot \ cn\ +\ dn
+\end{align*}
+令$c\ =\ 7d$, 有$T(n)\ \leq \ cn$ \\
+即SELECT-7的时间复杂度为$O(n)$
+
+
+\section{Find out honest monkeys}
+\subsection{(a)}
+见Algorithm 4.
+
+\begin{algorithm}
+\caption{Reduce Size}
+\begin{algorithmic}[1]
+
+\Procedure{ReduceSize}{mlist}\Comment{mlist是存储Monkey类型的环形链表}
+\State $n\ \gets \ mlist.size()$
+\For{i from 0 to (n-2) by 2}\Comment{做 n/2 次monkey-to-monkey comparisons}
+\State m1 = mlist.remove()\Comment{m1是mlist的第一个元素, 此元素从链表移除}
+\State m2 = mlist.remove()\Comment{m2是mlist的第一个元素(原先是第二个), 此元素从链表移除}
+\If{m1 says m2 honest and m2 says m1 honest}
+\State mlist.add(m1)\Comment{把m1加到链表尾部}
+\EndIf
+\EndFor
+\State return mlist
+\EndProcedure
+
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{(b)}
+见Algorithm 5.
+
+\begin{algorithm}
+\caption{Find Honest}
+\begin{algorithmic}[1]
+
+\Procedure{FindHonest}{mlist}\Comment{mlist是存储Monkey类型的环形链表}
+\State $originmlist\ \gets \ mlist$
+\While{mlist.size() > 2}
+\State REDUCESIZE(mlist)
+\EndWhile
+
+\If{mlist.size() == 2}
+\State m1 = mlist.remove()\Comment{m1是mlist的第一个元素, 此元素从链表移除}
+\State m2 = mlist.remove()\Comment{m2是mlist的第一个元素(原先是第二个), 此元素从链表移除}
+\State $count \gets 0$
+\For{mi in originmlist}
+\If{mi says m1 honest}
+\State count ++
+\If{$count\ \geq \ originmlist.size()/2$}
+\State return m2
+\Else
+\State return m1
+\EndIf
+\Else
+\State return mlist.remove()
+\EndIf
+\EndFor
+\EndIf
+\EndProcedure
+
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{(c)}
+\begin{enumerate}[1)]
+\item 
+当环形链表中有1个元素时, 显然可以找出诚实的猴子;\\
+当环形链表中有2个元素时, 根据算法将全部猴子与其中一只一一进行配对, 根据其他猴子对该猴子的评价数目便可以判断找出诚实的猴子
+以$hu$表示猴子的诚实或不可靠
+\item 
+以$hu$表示猴子的诚实或不可靠 \\
+假若根据算法, 当环形链表中有$k-1$只猴子时可以找出诚实的猴子, 假设其$hu$属性列表为$hu_i,\ hu_{i+1},\ ...,\ hu_{i+k-2}$; \\
+当环形链表中有$k$只猴子时亦可以找出诚实的猴子, 假设其$hu$属性列表为$hu_{i-1},\ hu_{i},\ ...,\ hu_{i+k-2}$
+\item
+那么当环形链表中有$k+1$只猴子时, 假设其$hu$列表为$hu_{i-2},\ hu_{i-1},\ ...,\ hu_{i+k-2}$, 根据算法对环形链表的前两项进行判断, 即对$hu_{i-2},\ hu_{i-1}$进行判断\\
+若两只猴子都是诚实的, 则会得到都诚实的答案，那么随便选一只加入列表尾部并抛弃另一只，可以得到新列表, 其$hu$列表为$hu_{i},\ hu_{i+1},\ ...,\ hu_{i+k-2},\ hu_{i-1}$或$hu_{i},\ hu_{i+1},\ ...,\ hu_{i+k-2},\ hu_{i-2}$, 其共$k-1$项; \\
+若两只猴子有一只不可靠的, 那么至少一只猴子会说对方是不可靠的, 那么抛弃两只猴子, 可以得到新列表, 其$hu$列表为$hu_{i},\ hu_{i+1},\ ...,\ hu_{i+k-2}$, 其共$k$项; \\
+若两只猴子都是不可靠的, 若得到都诚实的答案，那么随便选一只加入列表尾部并抛弃另一只，可以得到新列表, 其$hu$列表为$hu_{i},\ hu_{i+1},\ ...,\ hu_{i+k-2},\ hu_{i-1}$或$hu_{i},\ hu_{i+1},\ ...,\ hu_{i+k-2},\ hu_{i-2}$, 其共$k-1$项; 否则全部丢弃, 可以得到新列表, 其hu列表为$hu_{i},\ hu_{i+1},\ ...,\ hu_{i+k-2}$, 其共$k$项\\
+同时我们注意到, 由于诚实的猴子多于不可靠的猴子, 在我们进行抛弃猴子的过程中, 抛弃的不可靠的猴子总是比诚实的猴子多, 因而可以保证最终总有至少一个诚实的猴子在链表中\\
+根据$2)$我们可以得知, 当环形链表含有k+1只猴子时可以由算法推演转化为含有k或k-1只猴子的情况, 因而可以找到诚实的猴子
+\item
+由此我们得以证明算法的正确性
+\end{enumerate}
+
+\subsection{(d)}
+见Algorithm 6.
+
+\begin{algorithm}
+\caption{Find Honests}
+\begin{algorithmic}[1]
+
+\Procedure{FindHonests}{mlist}\Comment{mlist是存储Monkey类型的环形链表}
+\State $originmlist\ \gets \ mlist$
+
+\While{mlist.size() > 2}
+\State $n\ \gets \ mlist.size()$
+\State m1 = mlist.remove()\Comment{m1是mlist的第一个元素, 此元素从链表移除}
+\State m2 = mlist.remove()\Comment{m2是mlist的第一个元素(原先是第二个), 此元素从链表移除}
+\If{m1 says m2 honest and m2 says m1 honest}
+\State mlist.add(m1)\Comment{把m1加到链表尾部}
+\EndIf
+\EndWhile
+
+\If{mlist.size() == 2}
+\State m1 = mlist.remove()\Comment{m1是mlist的第一个元素, 此元素从链表移除}
+\State m2 = mlist.remove()\Comment{m2是mlist的第一个元素(原先是第二个), 此元素从链表移除}
+\State $count \gets 0$
+\For{mi in originmlist}
+\If{mi says m1 honest}
+\State count ++
+\If{$count\ \geq \ originmlist.size()/2$}
+\State honest0 = m2
+\Else
+\State honest0 = m1
+\EndIf
+\Else
+\State honest0 = mlist.remove()
+\EndIf
+\EndFor
+\EndIf
+
+\State honestlist.add(honest0)
+\For{mi in originmlist except honest0}
+\If{honest0 says mi honest}
+\State honestlist.add(mi)
+\EndIf
+\EndFor
+\State return honestlist
+\EndProcedure
+
+\end{algorithmic}
+\end{algorithm}
+
+
+\end{document}
