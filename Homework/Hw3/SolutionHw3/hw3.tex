@@ -1,0 +1,553 @@
+%!TEX program = xelatex
+\documentclass{article}  
+
+\usepackage[UTF8]{ctex}  
+ 
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{parskip}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{verbatim}
+\usepackage{enumerate}
+ 
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+
+%%%%For macos users, please enable below commands to support chinese characters. If the fonts are not installed in your system, please install them first.
+\setCJKmainfont{Kaiti TC Regular}
+\setCJKsansfont{Songti TC Regular}
+\setCJKmonofont{Heiti TC Regular}
+ 
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{reflection}[2][Reflection]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{proposition}[2][Proposition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+ 
+\begin{document}
+ 
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+ 
+%\renewcommand{\qedsymbol}{\filledbox}
+ 
+\title{第三次作业}
+\author{ピカピカピ}
+ 
+\maketitle
+
+\section{Transpose of a Directed Graph. CLRS 22.1-3}
+\subsection{Adjacency List}
+见算法1: AdjacencyListTranspose算法
+
+\begin{algorithm}
+\caption{AdjacencyListTranspose}
+\begin{algorithmic}[1]
+\Procedure{AdjacencyListTranspose}{Graph g}\Comment{输入为一个链表数组, 是图的邻接链表}
+\State n = $|V|$
+\State Graph gt \Comment{初始化一个空的链表数组用来存放图的转置}
+\For{i from 0 to n}
+\For{j in g[i]} \Comment{即遍历g[i]链表中的每一个元素}
+\State g[j].add(i) \Comment{对g[i]中的元素j, 将i添加到链表g[j]中}
+\EndFor
+\EndFor
+\State \Return gt
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+对算法AdjacencyListTranspose, 其遍历了链表数组中每一个链表的每一项, 换言之遍历了图的每一个结点与每一条边, 因而时间复杂度为$T(n) = O(|E|\ + |V|)$
+
+\subsection{Adjacency Matrix}
+对有向图而言, 其邻接矩阵必是一个方阵, 因而对表示为邻接矩阵的有向图, 求其转置转化为了求其邻接矩阵的转置 \\
+见算法2: AdjacencyMatrixTranspose算法
+
+\begin{algorithm}
+\caption{AdjacencyMatrixTranspose}
+\begin{algorithmic}[1]
+\Procedure{AdjacencyMatrixTranspose}{Graph g}\Comment{输入为一个二重数组, 是图的邻接矩阵}
+\State n = $|V|$
+\For{i from 0 to n}
+\For{j from i+1 to n}
+\State tmp = g[i][j]
+\State g[i][j] = g[j][i]
+\State g[j][i] = tmp 
+\EndFor
+\EndFor
+\State \Return g
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+对算法AdjacencyMatrixTranspose, 其运行了一个两层的嵌套循环来遍历转置矩阵的上三角, 因而时间复杂度为$T(n) = O(\frac{1}{2} \cdot |V|^2)\ = O(|V|^2)$
+
+
+\section{Cubic of Directed Graph. CLRS 22.1-5}
+\subsection{Adjacency List}
+见算法3: AdjacencyListCubic算法
+
+\begin{algorithm}
+\caption{AdjacencyListCubic}
+\begin{algorithmic}[1]
+\Procedure{AdjacencyListCubic}{Graph g}\Comment{输入为一个链表数组, 是图的邻接链表}
+\State n = $|V|$
+\State gc = g
+\For{i from 0 to n}
+\For{j in g[i]}
+\State gc[i].add (g[j]) \Comment{对g[i]中元素j, 将g[j]中所有元素添加到g[i]链表中}
+\For{k in g[j]}
+\State gc[i].add (g[k]) \Comment{对g[j]中元素k, 将g[k]中所有元素添加到g[i]链表中}
+\EndFor
+\EndFor
+\EndFor
+\State \Call{AdjacencyListSimple}{gc}
+\State \Return gc
+\EndProcedure
+
+\Procedure{AdjacencyListSimple}{Graph g}\Comment{输入为一个链表数组, 是图的邻接链表}
+\State initialize res \Comment{初始化一个新的结果邻接矩阵}
+\State n = $|V|$
+\State initialize A \Comment{初始化一个值全为0, 大小为|V|的数组}
+\For{i from 0 to n}
+\For{j in g[i]}
+\If{A[j] != i}
+\State A[j] = i
+\State res[i].add(j)
+\EndIf
+\EndFor
+\EndFor
+\State \Return res
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+对算法AdjacencyListSimple, 其进行多重边的去重, 其遍历图的每一个结点与每一条边, 时间复杂度为$T(n) = O(|E| + |V|)$ \\
+对算法AdjacencyListCubic, 其首先对每一个结点$u$的每一条边进行遍历, 在对每一条边的遍历过程中, 对该有向边指向的结点$v$执行如下操作: 对所有结点$v'$, 若存在从$v$到$v'$的长度不超过2的路径, 将其添加到结点$u$的链表中. 在每条边的遍历过程中最多可能需要遍历$|V| \cdot |V|$个结点, 因而有时间复杂度$O(|E| \cdot |V|^2$, 最后调用算法AdjacencyListSimple对重复边进行去重, 因而该算法时间复杂度为$T(n) = O(|E||V|^2) + O(|E||V|^2+|V|) = O(|E||V|^2+|V|)$
+
+\subsection{Adjacency Matrix}
+首先定义, 对无权图而言, 邻接矩阵中$g[i-1][j-1]$为$0$代表结点$i$到结点$j$之间不含有一条有向边, 而$g[i-1][j-1]$不为$0$代表结点$i$到结点$j$之间含有一条有向边. \\
+那么图的邻接矩阵$A$的$n$次方$A^n$则会对原始图作出如下改变: 对两结点$u$, $v$, 若存在一条从$u$到$v$的长度不大于$n$的路径, 则添加一条由$u$到$v$的有向边, 换言之邻接矩阵$g^n[u-1][v-1]$不为0 \\
+见算法4: AdjacencyMatrixCubic算法
+
+\begin{algorithm}
+\caption{AdjacencyMatrixCubic}
+\begin{algorithmic}[1]
+\Procedure{AdjacencyMatrixCubic}{Graph g}\Comment{输入为一个二重数组, 是图的邻接矩阵}
+\State gc = g
+\State gc = \Call{AdjacencyMatrixMutiple}{gc, g}
+\State gc = \Call{AdjacencyMatrixMutiple}{gc, g} 
+\State \Return gc
+\EndProcedure
+
+\Procedure{AdjacencyMatrixMutiple}{Matrix a, Matrix b}\Comment{输入为两个方阵}
+\State n = sqrt(a.length()) \Comment{n为方阵的长/宽长度}
+\State initialize res \Comment{初始化结果方阵res, 值全为0}
+\For{i from 0 to n}
+\For{j from 0 to n}
+\For{k from 0 to n}
+\State res[i][j] += a[i][k] * b[k][j]
+\EndFor
+\EndFor
+\EndFor
+\Return res
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+对算法AdjacencyMatrixMutiple, 其对矩阵执行一个三层嵌套循环来实现方阵乘法, 因而时间复杂度$T(n) = O(n^3)$ \\
+对算法AdjacencyMatrixCubic, 其两次调用算法AdjacencyMatrixMutiple, 因而时间复杂度$T(n) = 2 \cdot O(|V|^3) = O(|V|^3)$
+
+
+\section{Universal Sink. CLRS 22.1-6}
+见算法5: 算法FindUniversalSink
+
+\begin{algorithm}
+\caption{FindUniversalSink}
+\begin{algorithmic}[1]
+\Procedure{FindUniversalSink}{Graph g}\Comment{输入为一个二重数组, 是图的邻接矩阵}
+\State n = |V|
+\For{i from 0 to n}
+\If{g[i][i] == 1}
+\State \Return false
+\EndIf
+\EndFor
+\State i = 0
+\State j = 1
+\While{i <= N and j <= N}
+\If{g[i][j] == 1}
+\State i = max{i+1, j}
+\State j++
+\Else
+\State j = max{i+1, j+1}
+\EndIf
+\If{i <= N}
+\If{\Call{CheckAll}{g, i}}
+\State \Return true
+\Else
+\State \Return false
+\EndIf
+\Else
+\State \Return false
+\EndIf
+\EndWhile
+\EndProcedure
+
+\Procedure{CheckAll}{Graph g, v}
+\State n = |V|
+\For{i from 0 to n}
+\If{g[v][i] == 1}
+\State \Return false
+\EndIf
+\If{i != v}
+\If{g[i][v] == 0}
+\State \Return false
+\EndIf
+\EndIf
+\EndFor
+\State \Return true
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+正确性证明如下: \\
+\begin{itemize}
+\item 如果$g[i][j]=0$, 则$j$不是通用汇点 \\
+这是因为$g[i][j]=0$说明了没有从$i$到$j$的有向边, 而通用汇点的定义是一定要每个点都要有一条指向他的边, 因此j不是通用汇点.
+\item 接着证明如果A[i][j]=1, 则$i$不是通用汇点 \\
+这是因为若$g[i][j]=1$, 说明有从$i$到$j$的有向边, 所以$i$不是通用汇点
+\item 最后证明: 如果A[i][j]=0, 则$i$之前与$j$之前的点都不是通用汇点
+\begin{enumerate}[1)]
+\item 循环不变式: 每次迭代前, $i$前和$j$前且不包括$i$的点都不是通用汇点
+\item $i=0$, $j=1$时, $i$前和$j$前且不包括$i$的点为空, 因此循环不变式成立
+\item 倘若在迭代开始时, 已知$i$前和$j$前且不包括$i$的点都不是通用汇点
+\item 那么当进入循环体后, 若$g[i][j]$为$1$, 则说明$i$不是通用汇点. 同时已知$i$前和$j$前且不包括$i$的点都不是通用汇点, 因而执行$i=max\{i+1,j\}$, $j++$后仍然保持不变式;  \\
+若$g[i][j]$为$0$, 则说明$j$不是通用汇点. 同时已知$i$前和$j$前且不包括$i$的点都不是通用汇点, 若$j$原本小于$i$, 那么其需要变化到$i+1$, 因而仍保持循环不变式
+\item 因而若$i < |V|+1$, $j=|V|+1$, 那么$j$前不包括$i$的点都不是通用汇点, 因而只需要检查$i$即可; 若$i=|V|+1$, 则没有通用汇点
+\end{enumerate}
+\end{itemize}
+由此算法正确性得到了证明
+
+\section{Counting Simple Paths. CLRS 22.4-2}
+见算法6: 算法FindPath
+
+\begin{algorithm}
+\caption{FindPath}
+\begin{algorithmic}[1]
+\Procedure{FindPath}{Graph g, u, v}\Comment{输入图的邻接链表以及搜索的两个结点}
+\If{u == v}
+\State \Return 1
+\Else
+\State pathnum = 0
+\For{i in g[u]}\Comment{遍历结点u的链表}
+\State pathnum += \Call{FindPath}{g, w, v}
+\EndFor
+\State \Return pathnum
+\EndIf
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
+\section{Euler Tour. CLRS 22-3}
+
+\subsection{a}
+\begin{itemize}
+\item 首先证明充分性 \\
+利用反证法. 假设图中存在欧拉回路, 且假设图中有一些定点$v$, 其入度和出度不相等. 不妨假设入度大于出度, 那么在从$v$出发并回到$v$多次后, 必然将存在仍未使用的进入边, 这是因为每当经过$v$一次, $v$的一条入边和一条出边都被使用, 假设$v$入度为$a$, 出度为$b$, 那么当经过$v$ $a$次以后, 将存在$b-a$条从$v$出发的边, 然而此时从$v$进入的边都已经被使用, 因而不可能存在欧拉回路, 与前提矛盾, 因而可以证明充分性
+\item 随后证明必要性 \\
+利用归纳法, 
+\begin{enumerate}[1)]
+\item 对于仅有一个结点$v$的图, $v$的入度和出度都相等, 那么说明其要么无环, 要么仅有自环, 显然存在欧拉回路
+\item 假设对所有$k$个结点的图, 其$k$个结点的入度和出度相等, 都存在欧拉回路
+\item 那么对存在$k+1$个结点的图, 其$k+1$个结点的入度和出度相等, 取其中一个结点$u$, 若其有自环, 显然欧拉回路可以由该结点通过自环来回到该结点, 所有自环都能被使用, 因而可以删去该结点的自环, 此时仍能保证该结点入度和出度相等. 对于该结点所连接的其余的有向边, 为其进行两两配对, 对每一对有向边$e_1,\ e_2$, 假设其分别连接结点$v_1,\ v_2$, 可以将$e_1,\ e_2$删去, 同时在$v_1,\ v_2$间建立新的一条有向边, 这样可以保证$v_1,\ v_2$的入度和出度仍然相等, 同时$u$的入度和出度也相等. 对$u$的每一对有向边都执行相同的操作, 直到$u$的入度和出度都为0, 此时该含$k+1$个结点的图可以转化为含$k$个结点的图, 因而含有欧拉回路
+\item 因而对所有的图, 若其所有结点的入度和出度都相等, 那么改图存在欧拉回路
+\end{enumerate}
+\end{itemize}
+
+\subsection{b}
+见算法7: 算法FindEulerCircuit
+
+\begin{algorithm}
+\caption{FindEulerCircuit}
+\begin{algorithmic}[1]
+\Procedure{FindEulerCircuit}{Graph g}\Comment{输入图的邻接表}
+\State initialize v, res \Comment{选择起点v}
+\State \Call{FindEuler}{v, res}
+\EndProcedure
+
+\Procedure{FindEuler}{v, res}\Comment{输入结点}
+\For{w in g[v]}
+\State e = (v, w)
+\If{!e.visited}
+\State e.visited = 1
+\State \Call{FindEuler}{w, res}
+\EndIf
+\EndFor
+\State res.add(v)
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
+\section{Arbitrage. CLRS 24-3}
+\subsection{a}
+首先构建图, 将货币作为图中的结点, 每个结点之间的有向边权重取$-In(R[i,j])$, 这样$R[i_1,i_2] \cdot R[i_2,i_3] \cdot \cdot \cdot R[i_{k-1},i_k] \cdot R[i_k, i_1]>1$可以被转化为$In(R[i_1,i_2] \cdot R[i_2,i_3] \cdot \cdot \cdot R[i_{k-1},i_k] \cdot R[i_k, i_1]) = In(R[i_1,i_2] )+In(R[i_2,i_3])+ \cdot \cdot \cdot In(R[i_{k-1},i_k])+In(R[i_k, i_1]) < 0$, 换言之即转化为检测负权环问题, 因而运用Bellman-Ford算法即可解决 \\
+见算法8: 算法DetermineArbitrage
+
+\begin{algorithm}
+\caption{DetermineArbitrage}
+\begin{algorithmic}[1]
+\Procedure{DetermineArbitrage}{clist[], R[][]}
+\For{entry in R}
+\State entry = -In(entry)
+\EndFor
+\State res = \Call{BellmanFord}{R, c[0]}
+\If{res == false}
+\State \Return true
+\EndIf
+\State \Return false
+\EndProcedure
+
+\Procedure{BellmanFord}{g, u}\Comment{g以邻接矩阵形式输入}
+\For{k from 0 to n-1}
+\State d$^{(k)}$ = [] 
+\EndFor
+\For{v in V, except u}
+\State d$^{(0)}$[v] = Infinity
+\EndFor
+\State d$^{(0)}$[u] = 0
+\For{k from 1 to n}
+\For{w in V}
+\State d$^{(k)}$[w] = min\{d$^{(k-1)}$[w], min$_a$\{d$^{(k-1)}$[a] + weight(a,w)\}\}
+\EndFor
+\EndFor
+\If{d$^{(n-1)}$ != d$^n$}
+\State \Return false
+\EndIf
+\State \Return d$^{(n-1)}$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+由于Bellman-Ford算法时间复杂度为$O(m \cdot n)$, 因而算法DetermineArbitrage中调用Bellman-Ford算法部分时间复杂度为$O(n^2 \cdot n) = O(n^3)$, 为有向边赋值的两层嵌套循环复杂度为$O(n^2)$, 因而整体时间复杂度为$O(n^2 \cdot n) = O(n^3)$
+
+\subsection{b}
+根据上问, 此问可转变为输出负权环问题
+见算法9: 算法FindArbitrage
+
+\begin{algorithm}
+\caption{FindArbitrage}
+\begin{algorithmic}[1]
+\Procedure{FindArbitrage}{clist[], R[][]}
+\For{entry in R}
+\State entry = -In(entry)
+\EndFor
+\State res = \Call{BellmanFord'}{R, c[0]}
+\If{res == false}
+\State \Return false
+\EndIf
+\State \Return res
+\EndProcedure
+
+\Procedure{BellmanFord'}{g, u}\Comment{g以邻接矩阵形式输入}
+\For{k from 0 to n-1}
+\State d$^{(k)}$ = [] 
+\EndFor
+\For{v in V, except u}
+\State d$^{(0)}$[v] = Infinity
+\EndFor
+\State d$^{(0)}$[u] = 0
+\For{k from 1 to n-1}
+\For{w in V}
+\If{d$^{(k-1)}$[w] > min$_a$\{d$^{(k-1)}$[a] + weight(a,w)\}}
+\State d$^{(k)}$[w] = min$_a$\{d$^{(k-1)}$[a] + weight(a,w)\}
+\State [parent[v] = u
+\Else
+\State d$^{(k)}$[w] = d$^{(k-1)}$[w]
+\EndIf
+\EndFor
+\EndFor
+
+\State v = -1
+\For{w in V}
+\If{d$^{(k-1)}$[w] > min$_a$\{d$^{(k-1)}$[a] + weight(a,w)\}}
+\State v = w
+\State break
+\EndIf
+\EndFor
+
+\If {v == -1l}
+\State \Return false
+\EndIf
+
+\For{i in V}
+\State v = parent[v]
+\EndFor
+
+\State k = v
+\While{1}
+\State res.add(k)
+\If{k == v and res.length() > 1}
+\State break
+\EndIf
+\State k = parent[k]
+\EndWhile
+\State \Return res
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+对更改后的Bellman-Ford'算法, 其增加了一个循环用于寻找负权环, 循环的数量级取决于负权环的大小, 换言之其时间复杂度最多不超过$O(|E|)$. 因而此算法时间复杂度与Bellman-Ford算法时间复杂度一直, 为$O(n^3)$
+
+\section{Strongly Connected Components Maintaining.}
+
+\subsection{a}
+考虑到在添加边的过程中, 可能会出现两种情况:
+\begin{itemize}
+\item 添加的有向边的起点和终点同属于未添加边时的有向图的同一个强连通分量, 那么在添加这条有向边后, 新的有向图的强连通分量并不会发生改变
+\item 添加的有向边的起点和终点不同属于未添加边时的有向图的同一个强连通分量, 那么则需要对整个图重新执行查找强连通分量的操作, 以确保当新的强连通分量生成时可以被检测到
+\end{itemize}
+因而可以维护一个存储现有的强连通分量的存储类型(例如栈) \\
+见算法10: 算法UpdateScc
+
+\begin{algorithm}
+\caption{UpdateScc}
+\begin{algorithmic}[1]
+\Procedure{UpdateScc}{e = (u,v), curscc}\Comment{e为添加的边, 端点u指向v, curscc为当前的强连通分量}
+\For{i from 0 to curscc.length()-1}
+\If{u is in curscc[i] and v is in curscc[i]}
+\State \Return curscc
+\EndIf
+\EndFor
+\State \Return \Call{FindScc}{u}
+\EndProcedure
+
+\Procedure{FindScc}{u}\Comment{以u为根进行dfs, 以寻找全部强连通分量}
+\State DFN(u) = Low[u] = ++Index
+\State s.push(u)\Comment{s是一个栈}
+\For{e in E where e = (u, v)}
+\If{v is not visited}
+\State \Call{FindScc}{v}
+\State Low[u] = min\{Low[u], Low[v]\}
+\ElsIf{v is in s}
+\State Low[u] = min\{Low[u], DFN[v]\}
+\EndIf
+\If{DFN[u] == Low[u]}
+\While{u != v}
+\State v = s.pop()
+\State res[i].add(v)\Comment{i初始为0, res为一个链表数组}
+\State i++
+\EndWhile
+\EndIf
+\EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+对算法FindScc而言, 其对图中每一个结点与每一条边都进行一次访问, 因而时间复杂度为$O(|V|+|E|)$ \\
+对算法UpdateScc而言, 其第一层循环遍历了当前图中的全部强连通分量, 因而最多遍历$|V|$个结点, 时间复杂度为$O(|V|)$, 因而整个算法的时间复杂度为$O(|V|+|E|)$ \\
+\\
+算法10是利用Tarjan算法来进行检测, 我还构想了另一种算法: \\
+在每一次插入边后, 只需要考虑在进行这次插入后, 这条边所连接的两个点是否构成强连通, 这是因为:
+\begin{itemize}
+\item 倘如添加的有向边的起点和终点同属于未添加边时的有向图的同一个强连通分量, 那么在添加这条有向边后, 新的有向图的强连通分量并不会发生改变
+\item 倘若添加的有向边的起点和终点不同属于未添加边时的有向图的同一个强连通分量, 不妨假定端点$u$属于强连通分量$S_u$, $v$属于强连通分量$S_v$, 根据定义显然有: \\
+对任意一点$u_{w_i} \in S_u$, $u_{w_i} $与$u$强连通, 那么假如在插入边后$u$与$v$构成强连通, 那么$u_{w_i} $必然将与$v$构成强连通(通过新添加的边), 根据对称性可知$v_{w_i} $也将与$u$构成强连通, 换言之即$S_u$与$S_v$构成了一个新的强连通分量
+\item 接下来证明, 倘若添加的有向边的起点和终点不同属于未添加边时的有向图的同一个强连通分量, 当添加一条边后, 如果该边两端点$u$与$v$仍不构成强连通, 那么图的强连通分量不会发生改变: \\
+利用反证法. 假设添加边后形成新的强连通分量, 那么这条强连通分量必定需要包含新添加的边, 换言之也必须包含$u$与$v$, 那么$u$与$v$将构成强连通, 与假设矛盾
+\end{itemize}
+据此可以构成新的算法, 见算法11: 算法UpdateScc‘
+
+\begin{algorithm}
+\caption{UpdateScc’}
+\begin{algorithmic}[1]
+\Procedure{UpdateScc‘}{e = (u,v), curscc}\Comment{e为添加的边, 端点u指向v, curscc为当前的强连通分量}
+\State su = -2, sv = -2
+\If{\Call{JudgeScc}{u, v}}
+\For{i from 0 to curscc.length()-1}
+\If{u in curscc[i]}
+\State su = i
+\EndIf
+\If{v in curscc[i]}
+\State sv = i
+\EndIf
+\If{su >0 and sv > 0}
+\State break
+\EndIf
+\EndFor
+\State merge curscc[su] and curscc[sv]
+\EndIf
+\State \Return curscc
+\EndProcedure
+
+\Procedure{JudgeScc}{u, v}\Comment{以v为起点, 查找是否存在从v到u的路径}
+\For{w in adj[v]}
+\If{w.visited}
+\State break
+\EndIf
+\State w.visited = 1
+\If{w == u}
+\State \Return true
+\EndIf
+\State \Call{JudgeScc}{u, w}
+\EndFor
+\State \Return false
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+算法UpdateScc‘在每次添加从$u$到$v$的有向边以后检验是否存在从$v$到$u$的路径, 时间复杂度为DFS的时间复杂度, 即$O(|V|+|E|)$
+\subsection{b}
+为了保持原来的强连通分量, 假设要添加从$u$到$v$的有向边, 那么只需检测是否存在从$v$到$u$的路径即可
+见算法12: 算法MaintainScc
+
+\begin{algorithm}
+\caption{MaintainScc}
+\begin{algorithmic}[1]
+\Procedure{MaintainScc}{m}
+\State num = 1
+\While{1}
+\State input e = (u,v)\Comment{e为添加的边, 端点u指向v}
+\If{\Call{JudgeScc}{u, v}}
+\State output "false" \Comment{不允许插入}
+\Else
+\State insert e
+\State num ++
+\EndIf
+\If{num == m}
+\State break
+\EndIf
+\EndWhile
+\EndProcedure
+
+\Procedure{JudgeScc}{u, v}\Comment{以v为起点, 查找是否存在从v到u的路径}
+\For{w in adj[v]}
+\If{w.visited}
+\State break
+\EndIf
+\State w.visited = 1
+\If{w == u}
+\State \Return true
+\EndIf
+\State \Call{JudgeScc}{u, w}
+\EndFor
+\State \Return false
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+算法MaintainScc一共进行$m$次循环, 每一次循环内执行一个DFS来进行判断, 因而总时间复杂度为$O(m \cdot (|V|+|E|))$
+
+ 
+\end{document}
